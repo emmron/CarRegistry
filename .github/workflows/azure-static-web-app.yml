@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: false
           lfs: false
       
       - name: Set up Node.js
@@ -35,7 +35,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "." # Location of your app code
+          app_location: "car-registry-client" # Location of your app code
           api_location: "" # Leave empty for now
           output_location: "dist" # Built app content directory
           app_build_command: "npm run build"
