@@ -35,9 +35,9 @@ app.UseCors("AllowAzureStaticApp");
 // In-memory car list for demo
 var cars = new List<Car>
 {
-    new Car { Id = Guid.NewGuid().ToString(), Make = "BMW", Model = "M3", Year = 2023, RegistrationStatus = "Pending" },
-    new Car { Id = Guid.NewGuid().ToString(), Make = "Mercedes", Model = "AMG GT", Year = 2023, RegistrationStatus = "Registered" },
-    new Car { Id = Guid.NewGuid().ToString(), Make = "Porsche", Model = "911", Year = 2022, RegistrationStatus = "Pending" }
+    new() { Id = Guid.NewGuid().ToString(), Make = "BMW", Model = "M3", Year = 2023, RegistrationStatus = "Pending" },
+    new() { Id = Guid.NewGuid().ToString(), Make = "Mercedes", Model = "AMG GT", Year = 2023, RegistrationStatus = "Registered" },
+    new() { Id = Guid.NewGuid().ToString(), Make = "Porsche", Model = "911", Year = 2022, RegistrationStatus = "Pending" }
 };
 
 // Endpoints
@@ -69,9 +69,9 @@ app.Run();
 
 record Car
 {
-    public string Id { get; set; }
-    public string Make { get; set; }
-    public string Model { get; set; }
-    public int Year { get; set; }
-    public string RegistrationStatus { get; set; }
+    public required string Id { get; set; }
+    public required string Make { get; set; }
+    public required string Model { get; set; }
+    public required int Year { get; set; }
+    public required string RegistrationStatus { get; set; }
 }
