@@ -32,29 +32,46 @@ app.UseHttpsRedirection();
 // Use CORS
 app.UseCors("AllowAzureStaticApp");
 
-var summaries = new[]
+// In-memory car list for demo
+var cars = new List<Car>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    new Car { Id = Guid.NewGuid().ToString(), Make = "BMW", Model = "M3", Year = 2023, RegistrationStatus = "Pending" },
+    new Car { Id = Guid.NewGuid().ToString(), Make = "Mercedes", Model = "AMG GT", Year = 2023, RegistrationStatus = "Registered" },
+    new Car { Id = Guid.NewGuid().ToString(), Make = "Porsche", Model = "911", Year = 2022, RegistrationStatus = "Pending" }
 };
 
-app.MapGet("/weatherforecast", () =>
+// Endpoints
+app.MapGet("/api/cars", () => cars)
+    .WithName("GetCars")
+    .WithOpenApi();
+
+app.MapPost("/api/cars", (Car car) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    car.Id = Guid.NewGuid().ToString();
+    cars.Add(car);
+    return Results.Created($"/api/cars/{car.Id}", car);
 })
-.WithName("GetWeatherForecast")
+.WithName("CreateCar")
+.WithOpenApi();
+
+app.MapPut("/api/cars/{id}/status", (string id, string status) =>
+{
+    var car = cars.FirstOrDefault(c => c.Id == id);
+    if (car == null) return Results.NotFound();
+    
+    car.RegistrationStatus = status;
+    return Results.Ok(car);
+})
+.WithName("UpdateCarStatus")
 .WithOpenApi();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+record Car
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public string Id { get; set; }
+    public string Make { get; set; }
+    public string Model { get; set; }
+    public int Year { get; set; }
+    public string RegistrationStatus { get; set; }
 }
