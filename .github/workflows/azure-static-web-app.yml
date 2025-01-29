@@ -20,6 +20,14 @@ jobs:
           submodules: true
           lfs: false
       
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install Dependencies
+        run: npm install
+      
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -27,7 +35,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/" # Location of your app code
+          app_location: "." # Location of your app code
           api_location: "" # Leave empty for now
           output_location: "dist" # Built app content directory
           app_build_command: "npm run build"
